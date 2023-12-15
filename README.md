@@ -1,4 +1,4 @@
-# World Building Toool
+# World Building Tool
 
 ## The point
 The point of this website is to help with worldbuilding. The tool keeps track of trade routes and these variables therein:
