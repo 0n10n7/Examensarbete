@@ -1,6 +1,6 @@
 {
-  "name": "worldbuildingtool",
-  "module": "index.ts",
+  "name": "world-building-tool-backend",
+  "module": "src/index.ts",
   "type": "module",
   "devDependencies": {
     "bun-types": "latest"

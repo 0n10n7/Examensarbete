@@ -1,26 +1,15 @@
-# World Building Tool
+# world-building-tool-backend
 
-## The point
-The point of this website is to help with worldbuilding. The tool keeps track of trade routes and these variables therein:
-- Resources that traverse the road
-- How long it takes for a shipment to traverse the road
-- Dangers along the road
-- Average losses of resources
+To install dependencies:
 
-The trade routes are algorithmically generated and account for:
-- Difficulty in terrain, trade routes prefer to traverse flat dry land or oceans instead of rocky mountains
-- Species prefrences to terrain, if a species are very quick to traverse a specific type of terrain they will prefer to use it as a trade route.
+```bash
+bun install
+```
 
-Cities and other tradehubs have export and import needs, farmers wonuldn't be buying grain or selling bricks.
+To run:
 
-## The how
-Pathfinding, hexagonal terrain generation, Dijkstra's algroithm
+```bash
+bun run src/index.ts
+```
 
-# Credit
-ME!
-
-# User instructions 
-Very hard to give without having designed anyhting yet
-
-# Licence
-GNU AGPLv3
+This project was created using `bun init` in bun v1.0.10. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
