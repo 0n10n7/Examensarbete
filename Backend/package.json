@@ -2,10 +2,16 @@
   "name": "world-building-tool-backend",
   "module": "src/index.ts",
   "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts"
+  },
   "devDependencies": {
     "bun-types": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "elysia": "^0.8.9"
   }
 }
