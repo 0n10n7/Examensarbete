@@ -1,59 +1,51 @@
 <script>
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+  import welcome from "$lib/images/svelte-welcome.webp";
+  import welcome_fallback from "$lib/images/svelte-welcome.png";
+  import MapImage from "$lib/images/the-lord-of-the-rings-middle-earth-map-i109833.jpg";
+  let mapImage, fileinput;
+
+  const onFileSelected = (e) => {
+    let image = e.target.files[0];
+    let reader = new FileReader();
+    reader.readAsDataURL(image);
+    reader.onload = (e) => {
+      mapImage = e.target.result;
+    };
+  };
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+  <title>Home</title>
+  <meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcome_fallback} alt="Welcome" />
-			</picture>
-		</span>
+<body>
+  {#if mapImage}
+    <img class="map_image" src={mapImage} alt="d" />
+  {:else}
+    <img class="map_image" src={MapImage} alt="" />
+  {/if}
 
-		to your new<br />SvelteKit app
-	</h1>
+  <button
+    on:click={() => {
+      fileinput.click();
+    }}>choose image</button
+  >
 
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
-</section>
+  <input
+    style="display:none"
+    type="file"
+    accept=".jpg, .jpeg, .png"
+    on:change={(e) => onFileSelected(e)}
+    bind:this={fileinput}
+  />
+</body>
 
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 </style>

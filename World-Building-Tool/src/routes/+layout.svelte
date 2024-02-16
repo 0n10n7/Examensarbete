@@ -11,7 +11,7 @@
 	</main>
 
 	<footer>
-		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
+		<p>contact me at <a href="https://discord.com/">@0n10n7</a> on discord</p>
 	</footer>
 </div>
 
@@ -35,19 +35,15 @@
 
 	footer {
 		display: flex;
-		flex-direction: column;
+		flex-direction: center ;
 		justify-content: center;
-		align-items: center;
-		padding: 12px;
+		padding: 1vw;
+		margin: 0px;
+		background-color: gray;
 	}
 
 	footer a {
 		font-weight: bold;
 	}
 
-	@media (min-width: 480px) {
-		footer {
-			padding: 12px 0;
-		}
-	}
 </style>
