@@ -1,9 +1,9 @@
 {
   "name": "world-building-tool-backend",
-  "module": "src/index.ts",
+  "module": "src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch src/index.ts"
+    "dev": "bun --watch src/index.js"
   },
   "devDependencies": {
     "bun-types": "latest"
@@ -12,6 +12,10 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "elysia": "^0.8.9"
+    "@elysiajs/cors": "^0.8.0",
+    "elysia": "^0.8.17",
+    "firebase": "^10.11.0",
+    "firebase-admin": "^12.1.0",
+    "mongoose": "^8.2.1"
   }
 }
