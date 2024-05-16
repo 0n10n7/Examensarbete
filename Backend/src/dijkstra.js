@@ -1,3 +1,5 @@
+import { t } from "elysia";
+
 //helper class for PriorityQueue
 class Node {
     constructor(val, priority) {
@@ -75,12 +77,51 @@ export class WeightedGraph {
     }
     addVertex(vertex) {
         if (!this.adjacencyList[vertex]) this.adjacencyList[vertex] = [];
+        else {
+            throw "THE FUCK";
+        }
     }
     addEdge(vertex1, vertex2, weight) {
         this.adjacencyList[vertex1].push({ node: vertex2, weight });
-        this.adjacencyList[vertex2].push({ node: vertex1, weight });
-        console.log("1,",this.adjacencyList[vertex1]);
-        console.log("2",this.adjacencyList[vertex2]);
+        //this.adjacencyList[vertex2].push({ node: vertex1, weight });
+        //console.log("1,",this.adjacencyList[vertex1]);
+        //console.log("2",this.adjacencyList[vertex2]);
+    }
+    changeVertex(vertex, weight) {
+        this.adjacencyList[vertex][0].weight = weight;
+        this.adjacencyList[vertex][1].weight = weight;
+        this.adjacencyList[vertex][2].weight = weight;
+        this.adjacencyList[vertex][3].weight = weight;
+
+        this.adjacencyList[vertex][4].weight = weight * 1.4;
+        this.adjacencyList[vertex][5].weight = weight * 1.4;
+        this.adjacencyList[vertex][6].weight = weight * 1.4;
+        this.adjacencyList[vertex][7].weight = weight * 1.4;
+        console.log(this.adjacencyList[vertex]);
+
+
+    }
+    changeEdge(vertex1, vertex2, weight) {
+        let error1 = true;
+        let error2 = true;
+        this.adjacencyList[vertex1].forEach(edge => {
+            if (edge.node == vertex2) {
+                edge.weight = weight;
+                error1 = false;
+                console.log(edge);
+            }
+        });
+        this.adjacencyList[vertex2].forEach(edge => {
+            if (edge.node == vertex1) {
+                edge.weight = weight;
+                error2 = false;
+                console.log(edge);
+            }
+        });
+        if (error1 || error2) {
+            throw "one edge didnt exist";
+        }
+
     }
     Dijkstra(start, finish) {
         const nodes = new PriorityQueue();

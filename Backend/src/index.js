@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
-import mongoose from "mongoose";
+import mongoose, { now } from "mongoose";
 
 import { UserDB } from "./schemas/users.js";
 
@@ -21,16 +21,14 @@ console.log("Elysia listening on 8080");
 
 let graph = new WeightedGraph();
 function fillOutGraph(size) {
-    console.log(size);
+    let time = Date.now();
     for (let i = 0; i <= size + 1; i++) {
-        console.log(i);
         for (let j = 0; j <= size + 1; j++) {
             graph.addVertex(`${i},${j}`);
         }
     }
-    console.log(size);
+    console.log(`graph took ${(Date.now() - time)} milliseconds to add vertexes`)
     for (let i = 1; i <= size; i++) {
-        console.log(i);
         for (let j = 1; j <= size; j++) {
             //console.log(JSON.stringify(i)+JSON.stringify(j));
             graph.addEdge(`${i},${j}`, `${i},${j - 1}`, 10);//UP
@@ -45,14 +43,13 @@ function fillOutGraph(size) {
             graph.addEdge(`${i},${j}`, `${i + 1},${j + 1}`, 14);//DOWN-RIGHT
         }
     }
-    console.log("graph created")
+    console.log(`graph took ${(Date.now() - time)} milliseconds to populate ${size * size} nodes`)
     console.log(graph.Dijkstra(`1,1`, `9,8`));
-    console.log(graph.Dijkstra(`7,7`, `7,6`));
 }
-fillOutGraph(20);
+fillOutGraph(2000);
 
-let graph2 = new WeightedGraph();
+for (let i = 2; i <= 5; i++) {
+    graph.changeVertex(`${3},${i}`, 100)
+}
 
-graph2.adjacencyList = graph.adjacencyList;
-console.log(graph2);
-//console.log(graph.adjacencyList)
+console.log(graph.Dijkstra(`1,2`, `4,2`));
