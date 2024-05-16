@@ -1,0 +1,3 @@
+[submodule "World-Building-Tool/emscripten-component-base"]
+	path = World-Building-Tool/emscripten-component-base
+	url = https://github.com/devappd/emscripten-component-base

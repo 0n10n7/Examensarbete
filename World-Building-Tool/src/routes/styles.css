@@ -34,23 +34,28 @@ h2 {
 }
 
 button{
+	margin-top: 0.5vh;
+	padding: 0.5vh 2vw;
+	border-color: #ffffff70;
+	border-style:solid;
+	border-radius: 0.2vh;
 	color: rgb(200, 200, 210);
 	background: linear-gradient(
-		90deg,
+		180deg,
 		rgba(31, 31, 50, 1) 0%,
 		rgba(31, 37, 37, 1) 30%,
 		rgba(31, 31, 31, 1) 50%,
 		rgba(31, 37, 37, 1) 70%,
 		rgba(31, 50, 31, 1) 100%
 	);
+	transition: color 0.1s linear;
 }
 button:hover{
+	border-color: #EEEEEE70;
 	background: linear-gradient(
 		180deg,
 		rgba(40, 40, 65, 1) 0%,
-		rgba(40, 48, 48, 1) 30%,
 		rgba(40, 40, 40, 1) 50%,
-		rgba(40, 48, 48, 1) 70%,
 		rgba(40, 65, 40, 1) 100%
 	);
 }
