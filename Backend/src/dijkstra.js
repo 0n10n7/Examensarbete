@@ -97,9 +97,6 @@ export class WeightedGraph {
         this.adjacencyList[vertex][5].weight = weight * 1.4;
         this.adjacencyList[vertex][6].weight = weight * 1.4;
         this.adjacencyList[vertex][7].weight = weight * 1.4;
-        console.log(this.adjacencyList[vertex]);
-
-
     }
     changeEdge(vertex1, vertex2, weight) {
         let error1 = true;
