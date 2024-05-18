@@ -1,4 +1,5 @@
 <script>
+  import Canvas from "./canvas.svelte";
   import welcome from "$lib/images/svelte-welcome.webp";
   import welcome_fallback from "$lib/images/svelte-welcome.png";
   import MapImage from "$lib/images/the-lord-of-the-rings-middle-earth-map-i109833.jpg";
@@ -31,7 +32,16 @@
       fileinput.click();
     }}>choose image</button
   >
-
+  {#if mapImage}
+    <Canvas mapImage={mapImage}></Canvas>
+    <!-- <div style="background-image: url({mapImage});
+    background-size: contain;
+    background-repeat: no-repeat;">
+      <p>BALLS</p>
+    </div> -->
+  {:else}
+    <p>FAN</p>
+  {/if}
   <input
     style="display:none"
     type="file"
