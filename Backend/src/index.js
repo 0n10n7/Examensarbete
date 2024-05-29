@@ -49,18 +49,18 @@ server.post("/dijkstra/send", ({ set, body }) => {
             // parsedBody.graph[i+1] //GREEN VALUE
             // parsedBody.graph[i+2] //BLUE VALUE
             //parsedBody.graph[i+3] //ALPHA VALUE
-            let color = `${parsedBody.graph[i]},${parsedBody.graph[i + 1]},${parsedBody.graph[i + 2]}`;
+            let color = `${parsedBody.graph[i]},${parsedBody.graph[i + 1]},${parsedBody.graph[i + 2]},${parsedBody.graph[i + 3]}`;
             switch (color) {
-                case "255,0,0": //RED
+                case "255,0,0,255": //RED
                     graphs[0].changeVertex(`${(i / 4) % parsedBody.size},${j}`, 100);
                     break;
-                case "0,255,0": //GREEN
+                case "0,255,0,255": //GREEN
                     graphs[0].changeVertex(`${(i / 4) % parsedBody.size},${j}`, 1000);
                     break;
-                case "0,0,255": //BLUE
+                case "0,0,255,255": //BLUE
                     graphs[0].changeVertex(`${(i / 4) % parsedBody.size},${j}`, 10000);
                     break;
-                case "0,0,0": //BLACK
+                case "0,0,0,255": //BLACK
                     graphs[0].changeVertex(`${(i / 4) % parsedBody.size},${j}`, 5);
                     break;
                 default:
