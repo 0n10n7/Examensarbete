@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
-import mongoose, { now } from "mongoose";
+import mongoose from "mongoose";
 
 import { UserDB } from "./schemas/users.js";
 
@@ -16,48 +16,71 @@ try {
 }
 
 const server = new Elysia();
-server.use(cors);
+server.use(cors());
 
 let graphs = [];
+server.get('/', async ({ set }) => {
+    set.status = 400;
+    return set.status = 200;
+})
+
 server.post("/generate", ({ set, body }) => {
     set.status = 400;
     let graph = new WeightedGraph();
     graphs.push(fillOutGraph(body.size, graph));
     return set.status = 200;
-})
+});
 server.post("/dijkstra/send", ({ set, body }) => {
     set.status = 400;
+    console.log("received");
+    let parsedBody = JSON.parse(body);
     //Need to implement a way to find the correct graph when there are multiple users
     if (graphs[0]) {
+        console.log(parsedBody.cities);
+        console.log("size", parsedBody.size);
         let paths = [];
-        for (let i = 0; i <= body.size * body.size; i += 4) {
-            let j = 0;
-            if (i % body.size === 0) {
+        let j = 0;
+        for (let i = 0; i <= parsedBody.size * parsedBody.size * 4; i += 4) {
+            if ((i / 4) % parsedBody.size == 0) {
                 j++;
+                console.log(j);
             }
-            // body.graph[i] //RED VALUE
-            // body.graph[i+1] //GREEN VALUE
-            // body.graph[i+2] //BLUE VALUE
-            //body.graph[i+3] //ALPHA VALUE
-            let color = `${body.graph[i]}${body.graph[i + 1]}${body.graph[i + 2]}`;
+            // parsedBody.graph[i] //RED VALUE
+            // parsedBody.graph[i+1] //GREEN VALUE
+            // parsedBody.graph[i+2] //BLUE VALUE
+            //parsedBody.graph[i+3] //ALPHA VALUE
+            let color = `${parsedBody.graph[i]},${parsedBody.graph[i + 1]},${parsedBody.graph[i + 2]}`;
             switch (color) {
-                case "25500": //RED
-                    graphs[0].changeVertex(`${i},${j}`, 100)
+                case "255,0,0": //RED
+                    graphs[0].changeVertex(`${(i / 4) % parsedBody.size},${j}`, 100);
                     break;
-                case "02550": //GREEN
-                    graphs[0].changeVertex(`${i},${j}`, 1000)
+                case "0,255,0": //GREEN
+                    graphs[0].changeVertex(`${(i / 4) % parsedBody.size},${j}`, 1000);
                     break;
-                case "00255": //BLUE
-                    graphs[0].changeVertex(`${i},${j}`, 10000)
+                case "0,0,255": //BLUE
+                    graphs[0].changeVertex(`${(i / 4) % parsedBody.size},${j}`, 10000);
+                    break;
+                case "0,0,0": //BLACK
+                    graphs[0].changeVertex(`${(i / 4) % parsedBody.size},${j}`, 5);
                     break;
                 default:
                     break;
             }
         }
-        for (let i = 1; i < body.cities.length; i++) {
-            paths.push(graphs[0].Dijkstra(body.cities[i], body.cities[i-1]));
+        console.log("exited the for loop");
+        console.log(parsedBody.cities.length);
+        for (let i = 0; i < parsedBody.cities.length; i++) {
+            for (let j = i; j < parsedBody.cities.length; j++) {
+                if (i != j) {
+                    paths.push(graphs[0].Dijkstra(parsedBody.cities[i], parsedBody.cities[j]));
+                }
+            }
+            //Make all cities connected to all cities. Make the path between cities have lowered weight.
+
         }
-        return paths;
+        console.log("PATHS.", paths);
+        set.status = 200;
+        return JSON.stringify(paths);
     }
     return ("Generate the graph first");
 })
@@ -67,14 +90,14 @@ console.log("Elysia listening on 8080");
 
 function fillOutGraph(size, graph) {
     let time = Date.now();
-    for (let i = 0; i <= size + 1; i++) {
-        for (let j = 0; j <= size + 1; j++) {
+    for (let i = -1; i <= size; i++) {
+        for (let j = -1; j <= size; j++) {
             graph.addVertex(`${i},${j}`);
         }
     }
     console.log(`graph took ${(Date.now() - time)} milliseconds to add vertexes`)
-    for (let i = 1; i <= size; i++) {
-        for (let j = 1; j <= size; j++) {
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
             //console.log(JSON.stringify(i)+JSON.stringify(j));
             graph.addEdge(`${i},${j}`, `${i},${j - 1}`, 10);//UP
             graph.addEdge(`${i},${j}`, `${i},${j + 1}`, 10);//DOWN
@@ -89,6 +112,7 @@ function fillOutGraph(size, graph) {
         }
     }
     console.log(`graph took ${(Date.now() - time)} milliseconds to populate ${size * size} nodes`)
+    graph.changeVertex("2,1", 10000);
     console.log(graph.Dijkstra(`1,1`, `9,8`));
     return graph;
 }

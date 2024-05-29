@@ -88,15 +88,21 @@ export class WeightedGraph {
         //console.log("2",this.adjacencyList[vertex2]);
     }
     changeVertex(vertex, weight) {
-        this.adjacencyList[vertex][0].weight = weight;
-        this.adjacencyList[vertex][1].weight = weight;
-        this.adjacencyList[vertex][2].weight = weight;
-        this.adjacencyList[vertex][3].weight = weight;
+        try {
+            this.adjacencyList[vertex][0].weight = weight;
+            this.adjacencyList[vertex][1].weight = weight;
+            this.adjacencyList[vertex][2].weight = weight;
+            this.adjacencyList[vertex][3].weight = weight;
 
-        this.adjacencyList[vertex][4].weight = weight * 1.4;
-        this.adjacencyList[vertex][5].weight = weight * 1.4;
-        this.adjacencyList[vertex][6].weight = weight * 1.4;
-        this.adjacencyList[vertex][7].weight = weight * 1.4;
+            this.adjacencyList[vertex][4].weight = weight * 1.4;
+            this.adjacencyList[vertex][5].weight = weight * 1.4;
+            this.adjacencyList[vertex][6].weight = weight * 1.4;
+            this.adjacencyList[vertex][7].weight = weight * 1.4;
+        }
+        catch (error) {
+            console.log(error);
+        }
+
     }
     changeEdge(vertex1, vertex2, weight) {
         let error1 = true;
@@ -170,7 +176,3 @@ export class WeightedGraph {
         return path.concat(smallest).reverse();
     }
 }
-
-
-
-//EXAMPLES=====================================================================
