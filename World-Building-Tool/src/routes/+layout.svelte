@@ -17,6 +17,7 @@
 
 <style>
   .app {
+    min-width: 90vw;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -34,6 +35,7 @@
   }
 
   footer {
+    width: 100%;
     display: flex;
     flex-direction: center;
     justify-content: center;

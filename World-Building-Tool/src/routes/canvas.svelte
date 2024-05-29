@@ -13,6 +13,7 @@
   let imageData;
   let t, l;
   export let mapImage;
+  let pathlist = [];
 
   let lineWidth = 10;
 
@@ -32,8 +33,56 @@
     console.log(map);
     return map;
   }
-  function putImageData(map) {
-    context.putImageData(map);
+  function putImageData(paths) {
+    let image = context.getImageData(0, 0, size, size);
+    paths.forEach((path) => {
+      pathlist.push({
+        name: `path ${pathlist.length + 1}`,
+        path: path,
+      });
+      pathlist = pathlist;
+      path.forEach((node) => {
+        console.log(node);
+        let x = node.split(",");
+        let y = x[1];
+        x = x[0];
+        let pixel = ((y - 1) * size + (x - 1)) * 4; //R value
+        image.data[pixel] = 0; // R
+        image.data[pixel + 1] = 0; // G
+        image.data[pixel + 2] = 0; // B
+        image.data[pixel + 3] = 255; // A
+      });
+    });
+    console.log(image);
+    try {
+      context.putImageData(image, 0, 0);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  function deletePath(path) {
+    let image = context.getImageData(0, 0, size, size);
+    let name = path.name.split(" ");
+    let i = name[1];
+    pathlist[i] = null
+    //pathlist = pathlist;
+    path.forEach((node) => {
+      console.log(node);
+      let x = node.split(",");
+      let y = x[1];
+      x = x[0];
+      let pixel = ((y - 1) * size + (x - 1)) * 4; //R value
+      image.data[pixel] = 0; // R
+      image.data[pixel + 1] = 0; // G
+      image.data[pixel + 2] = 0; // B
+      image.data[pixel + 3] = 0; // A
+    });
+    console.log(image);
+    try {
+      context.putImageData(image, 0, 0);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function sendCities() {
@@ -48,9 +97,11 @@
     let bodyList = {
       cities: cities,
       graph: graph,
+      size: size,
     };
+    let response;
     try {
-      await fetch("http://localhost:8080/dijkstra/send", {
+      response = await fetch("http://localhost:8080/dijkstra/send", {
         method: "POST",
         headers: headersList,
         body: JSON.stringify(bodyList),
@@ -58,6 +109,49 @@
     } catch (error) {
       console.log(error.message);
     }
+    console.log("response?");
+    response = await response.json();
+    console.log(response);
+    response.forEach((path) => {
+      console.log(path);
+      path.forEach((node) => {
+        let x = node.split(",");
+        let y = x[1];
+        x = x[0];
+        // Center
+        graph[4 * Number(x) + size * Number(y)] = 255;
+        graph[4 * Number(x) + size * Number(y) - 1] = 0;
+        graph[4 * Number(x) + size * Number(y) - 2] = 0;
+        graph[4 * Number(x) + size * Number(y) - 3] = 0;
+
+        // TOP
+        graph[4 * Number(x) + size * Number(y - 1)] = 255;
+        graph[4 * Number(x) + size * Number(y - 1) - 1] = 0;
+        graph[4 * Number(x) + size * Number(y - 1) - 2] = 0;
+        graph[4 * Number(x) + size * Number(y - 1) - 3] = 0;
+
+        //Bottom
+        graph[4 * Number(x) + size * Number(y + 1)] = 255;
+        graph[4 * Number(x) + size * Number(y + 1) - 1] = 0;
+        graph[4 * Number(x) + size * Number(y + 1) - 2] = 0;
+        graph[4 * Number(x) + size * Number(y + 1) - 3] = 0;
+
+        //left
+        graph[4 * Number(x - 1) + size * Number(y)] = 255;
+        graph[4 * Number(x - 1) + size * Number(y) - 1] = 0;
+        graph[4 * Number(x - 1) + size * Number(y) - 2] = 0;
+        graph[4 * Number(x - 1) + size * Number(y) - 3] = 0;
+
+        //right
+        graph[4 * Number(x + 1) + size * Number(y)] = 255;
+        graph[4 * Number(x + 1) + size * Number(y) - 1] = 0;
+        graph[4 * Number(x + 1) + size * Number(y) - 2] = 0;
+        graph[4 * Number(x + 1) + size * Number(y) - 3] = 0;
+        //console.log(4 * Number(x) + size * (Number(y) - 1) - 3);
+      });
+    });
+    //console.log(graph);
+    putImageData(response);
   }
 
   //CANVAS DRAWING RELATED
@@ -90,9 +184,10 @@
     if (city) {
       cities.push(`${x1},${y1}`);
       let tempColor = color;
-      color = "FFAACCFF";
+      color = "#FFAACCFF";
       context.arc(x1, y1, 50, 0, 2 * Math.PI);
       context.stroke();
+      context.closePath();
       color = tempColor;
     }
     city = false;
@@ -127,57 +222,104 @@
   <meta name="description" content="About this app" />
 </svelte:head>
 
-<div
-  class="text-column"
-  style="background-image: url({mapImage});
-background-size: contain;
-background-repeat: no-repeat;"
->
-  <canvas style="opacity: 0.5;"
-    bind:this={canvas}
-    width={size}
-    height={size}
-    on:mousedown={handleStart}
-    on:touchstart={(e) => {
-      const { clientX, clientY } = e.touches[0];
-      handleStart({
-        offsetX: clientX - l,
-        offsetY: clientY - t,
-      });
-    }}
-    on:mouseup={handleEnd}
-    on:touchend={handleEnd}
-    on:mouseleave={handleEnd}
-    on:mousemove={handleMove}
-    on:touchmove={(e) => {
-      const { clientX, clientY } = e.touches[0];
-      handleMove({
-        offsetX: clientX - l,
-        offsetY: clientY - t,
-      });
-    }}
-  ></canvas>
-  <input type="text" bind:value={lineWidth} />
-  <button on:click={getImageData}>HELLO</button>
-  <button
-    on:click={() => {
-      color = "#FF0000FF";
-    }}>RED</button
+<div id="map-container">
+  <div id="ui">
+    <div id="paths">
+      {pathlist};
+      {#each pathlist as path}
+        <li
+          style="background-color: rgba(0, 37, 50, 0.3); padding: 5;"
+          on:mouseenter={() => {
+            console.log(path.name);
+          }}
+          on:mouseleave={console.log("focus")}
+        >
+          {path.name} <button>delete</button>
+        </li>
+        <!-- add delete function-->
+      {/each}
+    </div>
+  </div>
+  <div
+    id="canvas-container"
+    style="background-image: url({mapImage});
+  background-size: contain;
+  background-repeat: no-repeat;"
   >
-  <button
-    on:click={() => {
-      color = "#10AAFFFF";
-    }}>BLUE</button
-  >
-  <button
-    on:click={() => {
-      color = "#00FF00FF";
-    }}>GREEN</button
-  >
-  <button
-    on:click={() => {
-      city = true;
-    }}>CITY</button
-  >
-  <button on:click={sendCities}>SEND</button>
+    <canvas
+      style="opacity: 0.5;"
+      bind:this={canvas}
+      width={size}
+      height={size}
+      on:mousedown={handleStart}
+      on:touchstart={(e) => {
+        const { clientX, clientY } = e.touches[0];
+        handleStart({
+          offsetX: clientX - l,
+          offsetY: clientY - t,
+        });
+      }}
+      on:mouseup={handleEnd}
+      on:touchend={handleEnd}
+      on:mouseleave={handleEnd}
+      on:mousemove={handleMove}
+      on:touchmove={(e) => {
+        const { clientX, clientY } = e.touches[0];
+        handleMove({
+          offsetX: clientX - l,
+          offsetY: clientY - t,
+        });
+      }}
+    ></canvas>
+  </div>
+  <div id="bottom-row">
+    <input type="text" bind:value={lineWidth} />
+    <button on:click={getImageData}>HELLO</button>
+    <button
+      on:click={() => {
+        color = "#FF0000FF";
+      }}>RED</button
+    >
+    <button
+      on:click={() => {
+        color = "#0000FFFF";
+      }}>BLUE</button
+    >
+    <button
+      on:click={() => {
+        color = "#00FF00FF";
+      }}>GREEN</button
+    >
+    <button
+      on:click={() => {
+        city = true;
+      }}>CITY</button
+    >
+    <button on:click={sendCities}>SEND</button>
+  </div>
 </div>
+
+<style>
+  #map-container {
+    width: 100%;
+    min-width: 80vw;
+    display: grid;
+    grid-template-columns: 1fr 9fr;
+  }
+  #bottom-row {
+    background-color: rgba(83, 116, 145, 0.545);
+    grid-column: 1 / span 2;
+  }
+  #ui {
+    grid-row: 1 / span 2;
+    background-color: gray;
+  }
+  #paths {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  #canvas-container {
+    width: 100%;
+    height: 100%;
+  }
+</style>

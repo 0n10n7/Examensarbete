@@ -21,26 +21,15 @@
 </svelte:head>
 
 <body>
-  {#if mapImage}
-    <img class="map_image" src={mapImage} alt="d" />
-  {:else}
-    <img class="map_image" src={MapImage} alt="" />
-  {/if}
-
   <button
     on:click={() => {
       fileinput.click();
     }}>choose image</button
   >
   {#if mapImage}
-    <Canvas mapImage={mapImage}></Canvas>
-    <!-- <div style="background-image: url({mapImage});
-    background-size: contain;
-    background-repeat: no-repeat;">
-      <p>BALLS</p>
-    </div> -->
+    <Canvas {mapImage}></Canvas>
   {:else}
-    <p>FAN</p>
+    <img class="map_image" src={MapImage} alt="" />
   {/if}
   <input
     style="display:none"
